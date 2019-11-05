@@ -1,0 +1,98 @@
+package ${package.Controller};
+
+import com.zscat.mallplus.dto.CommonResult;
+import ${package.Entity};
+
+import ${package.Service};
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import com.zscat.mallplus.annotation.SysLog;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * <p>
+ * $!{table.comment}
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Slf4j
+@RestController
+@Api(tags = "${entity}Controller", description = "$!{table.comment}管理")
+@RequestMapping("/${package.ModuleName}/${classname}")
+public class ${table.controllerName} {
+    @Resource
+    private ${table.serviceName} ${table.serviceName};
+
+    @SysLog(MODULE = "${package.ModuleName}", REMARK = "添加$!{table.comment}")
+    @ApiOperation(value = "添加$!{table.comment}")
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @ResponseBody
+    @PreAuthorize("hasAuthority('${package.ModuleName}:${classname}:create')")
+    public Object create(@Validated @RequestBody ${Module}${entity} ${package.ModuleName}${entity}, BindingResult result) {
+        CommonResult commonResult;
+        int count = ${table.serviceName}.create${entity}(${package.ModuleName}${entity});
+        if (count == 1) {
+            commonResult = new CommonResult().success(count);
+        } else {
+            commonResult = new CommonResult().failed();
+        }
+        return commonResult;
+    }
+    @SysLog(MODULE = "${package.ModuleName}", REMARK = "更新$!{table.comment}")
+    @ApiOperation(value = "更新$!{table.comment}")
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    @PreAuthorize("hasAuthority('${package.ModuleName}:${classname}:update')")
+    public Object update(@PathVariable("id") Long id,
+                         @Validated @RequestBody ${Module}${entity} ${package.ModuleName}${entity},
+                         BindingResult result) {
+        CommonResult commonResult;
+        int count = ${table.serviceName}.update${entity}(id, ${package.ModuleName}${entity});
+        if (count == 1) {
+            commonResult = new CommonResult().success(count);
+        } else {
+            commonResult = new CommonResult().failed();
+        }
+        return commonResult;
+    }
+    @SysLog(MODULE = "${package.ModuleName}", REMARK = "删除$!{table.comment}")
+    @ApiOperation(value = "删除$!{table.comment}")
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    @PreAuthorize("hasAuthority('${package.ModuleName}:${classname}:delete')")
+    public Object delete(@PathVariable("id") Long id) {
+        int count = ${table.serviceName}.delete${entity}(id);
+        if (count == 1) {
+            return new CommonResult().success(null);
+        } else {
+            return new CommonResult().failed();
+        }
+    }
+    @SysLog(MODULE = "${package.ModuleName}", REMARK = "根据$!{table.comment}分页获取$!{table.comment}列表")
+    @ApiOperation(value = "根据$!{table.comment}名称分页获取$!{table.comment}列表")
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @ResponseBody
+    @PreAuthorize("hasAuthority('${package.ModuleName}:${classname}:read')")
+    public Object getList(${Module}${entity} ${classname},
+                          @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+                          @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
+        return new CommonResult().pageSuccess(${table.serviceName}.list${entity}(${classname}, pageNum, pageSize));
+    }
+    @SysLog(MODULE = "${package.ModuleName}", REMARK = "根据编号查询$!{table.comment}信息")
+    @ApiOperation(value = "根据编号查询$!{table.comment}信息")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    @PreAuthorize("hasAuthority('${package.ModuleName}:${classname}:read')")
+    public Object getItem(@PathVariable("id") Long id) {
+        return new CommonResult().success(${table.serviceName}.get${entity}(id));
+    }
+
+}
